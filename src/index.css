@@ -20,6 +20,8 @@
   --faction-green: #2f6b3a;
   --faction-blue: #2c5f8a;
   --faction-purple: #6b4a8a;
+  --faction-black: #2a2a2a;
+  --faction-white: #c9c2a8;
   --faction-neutral: #6a6558;
 
   font-family: var(--sans);

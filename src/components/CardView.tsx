@@ -12,6 +12,8 @@ const colorVar: Record<string, string> = {
   green: 'var(--faction-green)',
   blue: 'var(--faction-blue)',
   purple: 'var(--faction-purple)',
+  black: 'var(--faction-black)',
+  white: 'var(--faction-white)',
   neutral: 'var(--faction-neutral)',
 }
 
@@ -28,18 +30,39 @@ export function CardView({ instanceId, card }: CardViewProps) {
   return (
     <article
       ref={setNodeRef}
-      className="card"
+      className={`card${card.imageUrl ? ' card--art' : ''}`}
       style={style}
       {...listeners}
       {...attributes}
       aria-label={`${card.name}, ${card.type}`}
     >
-      <header className="card__header">
-        <span className="card__cost">{card.cost ?? '—'}</span>
-        <h3 className="card__name">{card.name}</h3>
-      </header>
-      <p className="card__type">{card.type}</p>
-      {card.text ? <p className="card__text">{card.text}</p> : null}
+      {card.imageUrl ? (
+        <img
+          className="card__art"
+          src={card.imageUrl}
+          alt=""
+          draggable={false}
+          loading="lazy"
+        />
+      ) : null}
+      <div className="card__body">
+        <header className="card__header">
+          <span className="card__cost">{card.cost ?? '—'}</span>
+          <h3 className="card__name">{card.name}</h3>
+        </header>
+        <p className="card__type">
+          {card.type}
+          {card.subtype ? ` · ${card.subtype}` : ''}
+        </p>
+        {card.atk != null && card.hp != null ? (
+          <p className="card__stats">
+            {card.atk}/{card.hp}
+          </p>
+        ) : null}
+        {!card.imageUrl && card.text ? (
+          <p className="card__text">{card.text}</p>
+        ) : null}
+      </div>
     </article>
   )
 }

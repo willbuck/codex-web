@@ -8,55 +8,26 @@ import {
   type DragStartEvent,
 } from '@dnd-kit/core'
 import { useState } from 'react'
-import { createInitialBoard, MOCK_CARDS } from '../data/mockCards'
-import type { BoardState, CardInstance, ZoneId } from '../types/card'
+import { findZone, moveCard } from '../board/boardLogic'
+import type { CardCatalog } from '../data/cardCatalog'
+import type { BoardState, ZoneId } from '../types/card'
+import { ZONE_IDS } from '../types/card'
 import { CardView } from './CardView'
 import { Zone } from './Zone'
 
-const ZONE_IDS: ZoneId[] = ['inPlay', 'hand', 'discard']
-
-function findZone(
-  state: BoardState,
-  instanceId: string,
-): ZoneId | null {
-  for (const zone of ZONE_IDS) {
-    if (state[zone].some((c) => c.instanceId === instanceId)) return zone
-  }
-  return null
+type BoardProps = {
+  board: BoardState
+  catalog: CardCatalog
+  onBoardChange: (next: BoardState) => void
+  disabled?: boolean
 }
 
-function moveCard(
-  state: BoardState,
-  instanceId: string,
-  toZone: ZoneId,
-): BoardState {
-  const fromZone = findZone(state, instanceId)
-  if (!fromZone || fromZone === toZone) return state
-
-  let moving: CardInstance | undefined
-  const next: BoardState = {
-    hand: [],
-    inPlay: [],
-    discard: [],
-  }
-
-  for (const zone of ZONE_IDS) {
-    next[zone] = state[zone].filter((c) => {
-      if (c.instanceId === instanceId) {
-        moving = c
-        return false
-      }
-      return true
-    })
-  }
-
-  if (!moving) return state
-  next[toZone] = [...next[toZone], moving]
-  return next
-}
-
-export function Board() {
-  const [board, setBoard] = useState<BoardState>(createInitialBoard)
+export function Board({
+  board,
+  catalog,
+  onBoardChange,
+  disabled = false,
+}: BoardProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
@@ -64,11 +35,13 @@ export function Board() {
   )
 
   function onDragStart(event: DragStartEvent) {
+    if (disabled) return
     setActiveId(String(event.active.id))
   }
 
   function onDragEnd(event: DragEndEvent) {
     setActiveId(null)
+    if (disabled) return
     const { active, over } = event
     if (!over) return
 
@@ -83,7 +56,7 @@ export function Board() {
     }
     if (!toZone) return
 
-    setBoard((prev) => moveCard(prev, instanceId, toZone))
+    onBoardChange(moveCard(board, instanceId, toZone))
   }
 
   const activeInstance = activeId
@@ -92,7 +65,7 @@ export function Board() {
       )
     : undefined
   const activeCard = activeInstance
-    ? MOCK_CARDS[activeInstance.cardId]
+    ? catalog[activeInstance.cardId]
     : undefined
 
   return (
@@ -107,14 +80,14 @@ export function Board() {
           id="inPlay"
           label="In Play"
           cards={board.inPlay}
-          catalog={MOCK_CARDS}
+          catalog={catalog}
         />
-        <Zone id="hand" label="Hand" cards={board.hand} catalog={MOCK_CARDS} />
+        <Zone id="hand" label="Hand" cards={board.hand} catalog={catalog} />
         <Zone
           id="discard"
           label="Discard"
           cards={board.discard}
-          catalog={MOCK_CARDS}
+          catalog={catalog}
         />
       </div>
       <DragOverlay>
