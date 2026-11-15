@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Source+Sans+3:wght@400;600&display=swap');
+
+:root {
+  --display: 'Fraunces', Georgia, serif;
+  --sans: 'Source Sans 3', 'Segoe UI', sans-serif;
+
+  --ink: #1a2418;
+  --ink-muted: #3d4a39;
+  --ink-soft: #66715f;
+  --paper: #e8efe3;
+  --panel: rgba(255, 252, 245, 0.72);
+  --panel-hot: rgba(214, 232, 196, 0.55);
+  --card-face: #fffaf0;
+  --line: rgba(40, 55, 36, 0.18);
+  --line-strong: rgba(40, 55, 36, 0.35);
+  --accent: #2f6b3a;
+  --card-shadow: 0 8px 20px rgba(26, 36, 24, 0.12);
+
+  --faction-red: #b23b2c;
+  --faction-green: #2f6b3a;
+  --faction-blue: #2c5f8a;
+  --faction-purple: #6b4a8a;
+  --faction-neutral: #6a6558;
+
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, #cfe0bc 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, #d7c9a8 0%, transparent 50%),
+    linear-gradient(160deg, #dfe8d6 0%, var(--paper) 45%, #d4ddd0 100%);
+  background-attachment: fixed;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+button {
+  font: inherit;
+}
